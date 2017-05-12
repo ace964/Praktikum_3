@@ -9,6 +9,7 @@ import de.hawhh.informatik.sml.kino.materialien.Kino;
 import de.hawhh.informatik.sml.kino.materialien.Kinosaal;
 import de.hawhh.informatik.sml.kino.materialien.Vorstellung;
 import de.hawhh.informatik.sml.kino.werkzeuge.kasse.KassenWerkzeug;
+import de.hawhh.informatik.sml.kino.werkzeuge.zahlung.ZahlungsWerkzeugUI;
 
 /**
  * Startet die Anwendung.
@@ -31,6 +32,8 @@ public class StartupKinoticketverkauf_Blatt03
             public void run()
             {
                 new KassenWerkzeug(kino);
+
+            	new ZahlungsWerkzeugUI(null).zeigeFenster();
             }
         });
     }

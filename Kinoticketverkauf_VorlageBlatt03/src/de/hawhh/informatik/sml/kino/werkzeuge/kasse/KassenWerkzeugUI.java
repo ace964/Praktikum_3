@@ -28,7 +28,7 @@ class KassenWerkzeugUI
      * http://tango.freedesktop.org/
      */
 
-    private static final String TITEL = "PM2-Kinokartenverkauf";
+	private static final String TITEL = "PM2-Kinokartenverkauf";
 
     // Die Widgets, aus denen das UI sich zusammensetzt
     private JFrame _frame;
@@ -58,6 +58,7 @@ class KassenWerkzeugUI
         _frame.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
     }
 
+    
     /**
      * Zeigt das Fenster an.
      */
