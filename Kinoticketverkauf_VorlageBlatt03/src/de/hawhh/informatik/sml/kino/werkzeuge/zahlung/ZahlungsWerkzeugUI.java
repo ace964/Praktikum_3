@@ -1,6 +1,7 @@
 package de.hawhh.informatik.sml.kino.werkzeuge.zahlung;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.text.NumberFormat;
@@ -30,41 +31,52 @@ public class ZahlungsWerkzeugUI
 
 	public ZahlungsWerkzeugUI(JFrame owner)
 	{
-		_dialog = new JDialog(owner, TITEL);
+		_dialog = new JDialog(owner, TITEL, Dialog.ModalityType.DOCUMENT_MODAL);
 		_dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		_dialog.getContentPane().setLayout(new BorderLayout());
 
-		
 		_dialog.getContentPane().add(erstelleButtonPanel(), BorderLayout.SOUTH);
-		_dialog.getContentPane().add(erstelleRechnungsPanel(), BorderLayout.CENTER);
+		_dialog.getContentPane().add(erstelleRechnungsPanel(),
+		        BorderLayout.CENTER);
 	}
 
+	/**
+	 * Erstellt das Rechnungspanel.
+	 * 
+	 * @return Das erstellte Rechnungspanel
+	 */
 	private JComponent erstelleRechnungsPanel()
 	{
 		JComponent rechnungsPanel = new JPanel();
 		rechnungsPanel
 		        .setLayout(new BoxLayout(rechnungsPanel, BoxLayout.Y_AXIS));
-		
-		_gesamtBetragLabel = new JLabel("Gesamtbetrag: \txx.xx €");
-		
+
+		_gesamtBetragLabel = new JLabel("Gesamtbetrag: xx.xx €");
+
 		JComponent gezahltPanel = new JPanel(new FlowLayout());
-		JLabel gezahltLabel = new JLabel("Gezahlt: \t");
+		JLabel gezahltLabel = new JLabel("Gezahlt: ");
 		gezahltPanel.add(gezahltLabel);
-		
-		_gezahltTextField = new JFormattedTextField(NumberFormat.getCurrencyInstance(Locale.GERMANY));
-		_gezahltTextField.setMaximumSize(new Dimension(150, 20));
+
+		_gezahltTextField = new JFormattedTextField(
+		        NumberFormat.getCurrencyInstance(Locale.GERMANY));
+		_gezahltTextField.setMaximumSize(new Dimension(400, 20));
 		_gezahltTextField.setValue(new Double(0));
-		
+
 		gezahltPanel.add(_gezahltTextField);
-		
-		_nochZuZahlenLabel = new JLabel("Noch zu zahlen: \txx.xx €");
-		
+
+		_nochZuZahlenLabel = new JLabel("Noch zu zahlen: xx.xx €");
+
 		rechnungsPanel.add(_gesamtBetragLabel);
 		rechnungsPanel.add(gezahltPanel);
 		rechnungsPanel.add(_nochZuZahlenLabel);
 		return rechnungsPanel;
 	}
-	
+
+	/**
+	 * Erstellt das Button Panel
+	 * 
+	 * @return Das erstellte Button Panel
+	 */
 	private JComponent erstelleButtonPanel()
 	{
 		JComponent buttonPanel = new JPanel(new FlowLayout());
@@ -73,53 +85,24 @@ public class ZahlungsWerkzeugUI
 		_abbrechenButton = new JButton("Abbrechen");
 		buttonPanel.add(_abbrechenButton);
 		buttonPanel.add(_okButton);
-		
+
 		return buttonPanel;
 	}
-	
 
-	/*
-	public JButton getAbbrechenButton()
+	/**
+	 * Zeigt das Fenster an.
+	 */
+	protected void zeigeFenster()
 	{
-		return _abbrechenButton;
+		_dialog.pack();
+		_dialog.setVisible(true);
 	}
-	
-	public JButton getOkButton()
-	{
-		return _okButton;
-	}
-	
-	public JFormattedTextField getGezahltTextField()
-	{
-		return _gezahltTextField;
-	}
-	
-	
-	public JLabel getNochZuZahlenLabel()
-	{
-		return _nochZuZahlenLabel;
-	}
-	
-	public JLabel getZuZahlenLabel()
-	{
-		return _zuZahlenLabel;
-	}
-	*/
-	
-    /**
-     * Zeigt das Fenster an.
-     */
-    public void zeigeFenster()
-    {
-        _dialog.pack();
-        _dialog.setVisible(true);
-    }
 
-    /**
-     * Schließt das Fenster.
-     */
-    public void schliesseFenster()
-    {
-        _dialog.dispose();
-    }
+	/**
+	 * Schließt das Fenster.
+	 */
+	protected void schliesseFenster()
+	{
+		_dialog.setVisible(false);
+	}
 }
