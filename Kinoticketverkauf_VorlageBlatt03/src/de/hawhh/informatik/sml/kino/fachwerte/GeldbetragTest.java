@@ -4,7 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 
-public class GeldbetragTest //TODO mehr Testfälle
+public class GeldbetragTest
 {
     @Test 
     public void testGibStringWert()
@@ -35,24 +35,29 @@ public class GeldbetragTest //TODO mehr Testfälle
     public void testAddiereGeldbetrag()
     {
        Geldbetrag b = Geldbetrag.gibBetrag(1,22,true);
-       Geldbetrag a = Geldbetrag.gibBetrag(1,0,true);
+       Geldbetrag a = Geldbetrag.gibBetrag(1,00,true);
        Geldbetrag ergebnis1 = Geldbetrag.addiereGeldbetrag(a,b);
        assertEquals(ergebnis1.gibStringWert(),"2,22");
        
        Geldbetrag d = Geldbetrag.gibBetrag(12,34,true);
-       Geldbetrag c = Geldbetrag.gibBetrag(0,0,true);
+       Geldbetrag c = Geldbetrag.gibBetrag(0,67,true);
        Geldbetrag ergebnis2 = Geldbetrag.addiereGeldbetrag(c,d);
-       assertEquals(ergebnis2.gibStringWert(),"12,34");
+       assertEquals(ergebnis2.gibStringWert(),"13,01");
        
-       Geldbetrag f = Geldbetrag.gibBetrag(1,22,true);
-       Geldbetrag e = Geldbetrag.gibBetrag(31,36,true);
+       Geldbetrag f = Geldbetrag.gibBetrag(1,22,false);
+       Geldbetrag e = Geldbetrag.gibBetrag(31,36,false);
        Geldbetrag ergebnis3 = Geldbetrag.addiereGeldbetrag(e,f);
-       assertEquals(ergebnis3.gibStringWert(),"32,58");
+       assertEquals(ergebnis3.gibStringWert(),"-32,58");
        
        Geldbetrag h = Geldbetrag.gibBetrag(1,99,true);
-       Geldbetrag g = Geldbetrag.gibBetrag(1,5,true);
+       Geldbetrag g = Geldbetrag.gibBetrag(1,50,false);
        Geldbetrag ergebnis4 = Geldbetrag.addiereGeldbetrag(g,h);
-       assertEquals(ergebnis4.gibStringWert(),"3,04");
+       assertEquals(ergebnis4.gibStringWert(),"0,49");
+       
+       Geldbetrag j = Geldbetrag.gibBetrag(1,50,false);
+       Geldbetrag i = Geldbetrag.gibBetrag(1,51,true);
+       Geldbetrag ergebnis5 = Geldbetrag.addiereGeldbetrag(i,j);
+       assertEquals(ergebnis5.gibStringWert(),"0,01");
     }
     
     @Test
@@ -72,6 +77,11 @@ public class GeldbetragTest //TODO mehr Testfälle
        Geldbetrag e = Geldbetrag.gibBetrag(31,36,true);
        Geldbetrag ergebnis3 = Geldbetrag.substrahiereGeldbetrag(e,f);
        assertEquals(ergebnis3.gibStringWert(),"29,96");
+       
+       Geldbetrag h = Geldbetrag.gibBetrag(1,40,false);
+       Geldbetrag g = Geldbetrag.gibBetrag(31,36,false);
+       Geldbetrag ergebnis4 = Geldbetrag.substrahiereGeldbetrag(g,h);
+       assertEquals(ergebnis4.gibStringWert(),"-29,96");
     }
     
     @Test
@@ -92,6 +102,10 @@ public class GeldbetragTest //TODO mehr Testfälle
        Geldbetrag d = Geldbetrag.gibBetrag(1,27,true);
        Geldbetrag ergebnis4 = Geldbetrag.multipliziereBetrag(0,d);
        assertEquals(ergebnis4.gibStringWert(),"0,00");
+       
+       Geldbetrag e = Geldbetrag.gibBetrag(2,22,false);
+       Geldbetrag ergebnis5 = Geldbetrag.multipliziereBetrag(-2,e);
+       assertEquals(ergebnis5.gibStringWert(),"4,44");
     }
     
     @Test
@@ -108,6 +122,12 @@ public class GeldbetragTest //TODO mehr Testfälle
        
        Geldbetrag d = Geldbetrag.gibBetrag("5,08");
        assertEquals(d.gibStringWert(),"5,08");
+       
+       Geldbetrag e = Geldbetrag.gibBetrag("-5,08");
+       assertEquals(e.gibStringWert(),"-5,08");
+       
+       Geldbetrag f = Geldbetrag.gibBetrag("-0,00");
+       assertEquals(f.gibStringWert(),"0,00");
     }
     
     @Test
@@ -124,5 +144,11 @@ public class GeldbetragTest //TODO mehr Testfälle
        
        Geldbetrag d = Geldbetrag.gibBetrag(99);
        assertEquals(d.gibStringWert(),"0,99");
+
+       Geldbetrag e = Geldbetrag.gibBetrag(-299);
+       assertEquals(e.gibStringWert(),"-2,99");
+       
+       Geldbetrag f = Geldbetrag.gibBetrag(-0);
+       assertEquals(f.gibStringWert(),"0,00");
     }
 }
