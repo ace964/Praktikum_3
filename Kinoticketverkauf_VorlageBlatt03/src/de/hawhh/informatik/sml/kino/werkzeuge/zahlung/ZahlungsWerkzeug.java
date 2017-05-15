@@ -1,5 +1,6 @@
 package de.hawhh.informatik.sml.kino.werkzeuge.zahlung;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -9,13 +10,14 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JFrame;
 
+import de.hawhh.informatik.sml.kino.fachwerte.Geldbetrag;
 import de.hawhh.informatik.sml.kino.werkzeuge.ObservableSubwerkzeug;
 
 public class ZahlungsWerkzeug extends ObservableSubwerkzeug
 {
 
 	private ZahlungsWerkzeugUI _ui;
-	private int _zahlungsBetrag;
+	private Geldbetrag _zahlungsBetrag;
 
 	private boolean _bezahlt;
 
@@ -29,7 +31,7 @@ public class ZahlungsWerkzeug extends ObservableSubwerkzeug
 	 */
 	public ZahlungsWerkzeug(JFrame owner)
 	{
-		_zahlungsBetrag = 0;
+		_zahlungsBetrag = null;
 		_ui = new ZahlungsWerkzeugUI(owner);
 		_bezahlt = false;
 		registriereUIAktionen();
@@ -42,11 +44,11 @@ public class ZahlungsWerkzeug extends ObservableSubwerkzeug
 	 * @param zahlungsBetrag
 	 *            Der Betrag, der gezahlt werden muss.
 	 */
-	public void beginneZahlvorgang(int zahlungsBetrag)
+	public void beginneZahlvorgang(Geldbetrag zahlungsBetrag)
 	{
 		_zahlungsBetrag = zahlungsBetrag;
 		_bezahlt = false;
-		aktualisiereGesamtbetragLabel();
+		aktualisiereZahlungsBetragLabel();
 		_ui._gezahltTextField.setValue(new Double(0));
 		aktualisiereNochZuZahlenLabel();
 		_ui.zeigeFenster();
@@ -87,33 +89,44 @@ public class ZahlungsWerkzeug extends ObservableSubwerkzeug
 	 */
 	private void aktualisiereNochZuZahlenLabel()
 	{
-		int iBetrag = 0;
+		Geldbetrag iBetrag = null;
 		if (_ui._gezahltTextField.getValue() instanceof Double)
 		{
 			Double betrag = (Double) _ui._gezahltTextField.getValue();
-			iBetrag = (int) Math.round(betrag * 100);
+			iBetrag = Geldbetrag.gibBetrag((int) Math.round(betrag * 100));
 		} else
 		{
 			Long betrag = (Long) _ui._gezahltTextField.getValue();
-			iBetrag = (int) (betrag * 100);
+			iBetrag = Geldbetrag.gibBetrag((int) (betrag * 100));
 		}
 
-		double nochZuZahlen = (double) (_zahlungsBetrag - iBetrag) / 100D;
+		Geldbetrag nochZuZahlen = Geldbetrag.substrahiereGeldbetrag(_zahlungsBetrag, iBetrag);
+		
+		if(nochZuZahlen.gibEurocentWert() > 0)
+		{
+			_ui._okButton.setEnabled(false);
 
-		_ui._okButton.setEnabled(nochZuZahlen <= 0);
+			_ui._nochZuZahlenLabel
+			        .setText("Noch zu zahlen: "+nochZuZahlen.gibStringWert() +" €");
+			_ui._nochZuZahlenLabel.setForeground(Color.red);	
+		}
+		else
+		{
+			_ui._okButton.setEnabled(true);
 
-		_ui._nochZuZahlenLabel
-		        .setText(String.format("Noch zu zahlen: %.2f €", nochZuZahlen));
+			_ui._nochZuZahlenLabel
+			        .setText("Rückgeld: "+nochZuZahlen.gibStringWert().replace("-", "") +" €");
+			_ui._nochZuZahlenLabel.setForeground(Color.green);		
+		}
 	}
 
 	/**
 	 * Aktualisiert das Gesamtbetrag Label nach dem jetzigen Gesamtbetrag.
 	 */
-	private void aktualisiereGesamtbetragLabel()
+	private void aktualisiereZahlungsBetragLabel()
 	{
-		double gesamtbetrag = (double) _zahlungsBetrag / 100D;
 		_ui._gesamtBetragLabel
-		        .setText(String.format("Gesamtbetrag: %.2f €", gesamtbetrag));
+		        .setText("Gesamtbetrag: " + _zahlungsBetrag.gibStringWert() + " €");
 	}
 
 	/**

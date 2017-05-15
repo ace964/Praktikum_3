@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.swing.JPanel;
 
+import de.hawhh.informatik.sml.kino.fachwerte.Geldbetrag;
 import de.hawhh.informatik.sml.kino.fachwerte.Platz;
 import de.hawhh.informatik.sml.kino.materialien.Kinosaal;
 import de.hawhh.informatik.sml.kino.materialien.Vorstellung;
@@ -108,8 +109,8 @@ public class PlatzVerkaufsWerkzeug extends ObservableSubwerkzeug
 
         if (istVerkaufenMoeglich(plaetze))
         {
-            int preis = _vorstellung.getPreisFuerPlaetze(plaetze);
-            _ui.getPreisLabel().setText("Gesamtpreis: " + preis + " Eurocent");
+            Geldbetrag preis = _vorstellung.getPreisFuerPlaetze(plaetze);
+            _ui.getPreisLabel().setText("Gesamtpreis: " + preis.gibStringWert() + " €");
         }
         else
         {
@@ -189,7 +190,7 @@ public class PlatzVerkaufsWerkzeug extends ObservableSubwerkzeug
         aktualisierePlatzplan();
     }
     
-    public int getPreisFuerAusgewähltePlaetze()
+    public Geldbetrag getPreisFuerAusgewähltePlaetze()
     {
     	return _vorstellung.getPreisFuerPlaetze(_ui.getPlatzplan().getAusgewaehltePlaetze());
     }
