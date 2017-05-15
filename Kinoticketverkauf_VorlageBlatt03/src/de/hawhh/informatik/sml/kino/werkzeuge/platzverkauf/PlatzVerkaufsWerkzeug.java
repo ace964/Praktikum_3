@@ -3,10 +3,13 @@ package de.hawhh.informatik.sml.kino.werkzeuge.platzverkauf;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Set;
+
 import javax.swing.JPanel;
+
 import de.hawhh.informatik.sml.kino.fachwerte.Platz;
 import de.hawhh.informatik.sml.kino.materialien.Kinosaal;
 import de.hawhh.informatik.sml.kino.materialien.Vorstellung;
+import de.hawhh.informatik.sml.kino.werkzeuge.ObservableSubwerkzeug;
 
 /**
  * Mit diesem Werkzeug können Plätze verkauft und storniert werden. Es arbeitet
@@ -19,7 +22,7 @@ import de.hawhh.informatik.sml.kino.materialien.Vorstellung;
  * @author SE2-Team (Uni HH), PM2-Team
  * @version SoSe 2017
  */
-public class PlatzVerkaufsWerkzeug
+public class PlatzVerkaufsWerkzeug extends ObservableSubwerkzeug
 {
     // Die aktuelle Vorstellung, deren Plätze angezeigt werden. Kann null sein.
     private Vorstellung _vorstellung;
@@ -58,7 +61,8 @@ public class PlatzVerkaufsWerkzeug
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                verkaufePlaetze(_vorstellung);
+                informiereUeberAenderung();
+            	//verkaufePlaetze(_vorstellung);
             }
         });
 
@@ -143,7 +147,7 @@ public class PlatzVerkaufsWerkzeug
     /**
      * Aktualisiert den Platzplan basierend auf der ausgwählten Vorstellung.
      */
-    private void aktualisierePlatzplan()
+    public void aktualisierePlatzplan()
     {
         if (_vorstellung != null)
         {
@@ -168,10 +172,10 @@ public class PlatzVerkaufsWerkzeug
     /**
      * Verkauft die ausgewählten Plaetze.
      */
-    private void verkaufePlaetze(Vorstellung vorstellung)
+    public void verkaufeAusgewaehltePlaetze()
     {
         Set<Platz> plaetze = _ui.getPlatzplan().getAusgewaehltePlaetze();
-        vorstellung.verkaufePlaetze(plaetze);
+        _vorstellung.verkaufePlaetze(plaetze);
         aktualisierePlatzplan();
     }
 
@@ -183,5 +187,10 @@ public class PlatzVerkaufsWerkzeug
         Set<Platz> plaetze = _ui.getPlatzplan().getAusgewaehltePlaetze();
         vorstellung.stornierePlaetze(plaetze);
         aktualisierePlatzplan();
+    }
+    
+    public int getPreisFuerAusgewähltePlaetze()
+    {
+    	return _vorstellung.getPreisFuerPlaetze(_ui.getPlatzplan().getAusgewaehltePlaetze());
     }
 }

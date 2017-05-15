@@ -19,7 +19,7 @@ public class ZahlungsWerkzeugUI
 {
 	private static final String TITEL = "Zahlung";
 
-	private JDialog _dialog;
+	protected JDialog _dialog;
 
 	protected JLabel _gesamtBetragLabel;
 	protected JFormattedTextField _gezahltTextField;
@@ -31,7 +31,7 @@ public class ZahlungsWerkzeugUI
 	public ZahlungsWerkzeugUI(JFrame owner)
 	{
 		_dialog = new JDialog(owner, TITEL);
-		_dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		_dialog.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		_dialog.getContentPane().setLayout(new BorderLayout());
 
 		

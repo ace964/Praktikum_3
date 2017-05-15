@@ -31,7 +31,7 @@ class KassenWerkzeugUI
 	private static final String TITEL = "PM2-Kinokartenverkauf";
 
     // Die Widgets, aus denen das UI sich zusammensetzt
-    private JFrame _frame;
+    protected JFrame _frame;
     private JButton _beendenButton;
 
     /**

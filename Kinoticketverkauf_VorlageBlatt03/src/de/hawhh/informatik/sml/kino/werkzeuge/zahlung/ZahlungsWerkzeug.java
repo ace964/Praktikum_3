@@ -2,10 +2,12 @@ package de.hawhh.informatik.sml.kino.werkzeuge.zahlung;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JFrame;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import de.hawhh.informatik.sml.kino.werkzeuge.ObservableSubwerkzeug;
 
@@ -32,6 +34,7 @@ public class ZahlungsWerkzeug extends ObservableSubwerkzeug
 		aktualisiereGesamtbetragLabel();
 		_ui._gezahltTextField.setValue(new Double(0));
 		aktualisiereNochZuZahlenLabel();
+		_ui.zeigeFenster();
 	}
 	
 	private void reagiereAufOkButtonKlick()
@@ -55,20 +58,29 @@ public class ZahlungsWerkzeug extends ObservableSubwerkzeug
 	
 	private void aktualisiereNochZuZahlenLabel()
 	{
-		Double betrag = (Double) _ui._gezahltTextField.getValue();
-		int iBetrag = (int) Math.round(betrag*100);
+		int iBetrag = 0;
+		if(_ui._gezahltTextField.getValue() instanceof Double)
+		{
+			Double betrag = (Double) _ui._gezahltTextField.getValue();
+			iBetrag = (int) Math.round(betrag*100);
+		}
+		else
+		{
+			Long betrag = (Long) _ui._gezahltTextField.getValue();
+			iBetrag = (int) (betrag*100);
+		}
 		
 		double nochZuZahlen = (double)(_zahlungsBetrag - iBetrag) / 100D;
 		
-		_ui._okButton.setEnabled(nochZuZahlen < 0);
+		_ui._okButton.setEnabled(nochZuZahlen <= 0);
 		
-		_ui._nochZuZahlenLabel.setText("Noch zu zahlen: \t" + nochZuZahlen + " €");
+		_ui._nochZuZahlenLabel.setText(String.format("Noch zu zahlen: %.2f €", nochZuZahlen));
 	}
 	
 	private void aktualisiereGesamtbetragLabel()
 	{
 		double gesamtbetrag = (double)_zahlungsBetrag / 100D;
-		_ui._gesamtBetragLabel.setText("Gesamtbetrag: \t" + gesamtbetrag + " €");
+		_ui._gesamtBetragLabel.setText(String.format("Gesamtbetrag: %.2f €",gesamtbetrag));
 	}
 	
 	public boolean isBezahlt()
@@ -99,26 +111,46 @@ public class ZahlungsWerkzeug extends ObservableSubwerkzeug
 				
 			}
 		});
-		_ui._gezahltTextField.getDocument().addDocumentListener(new DocumentListener()
+		_ui._gezahltTextField.addPropertyChangeListener(new PropertyChangeListener()
 		{
 			
 			@Override
-			public void removeUpdate(DocumentEvent e)
+			public void propertyChange(PropertyChangeEvent arg0)
 			{
 				reagiereAufTextEingabe();
 				
 			}
+		});
+		
+		_ui._dialog.addComponentListener(new ComponentListener()
+		{
 			
 			@Override
-			public void insertUpdate(DocumentEvent e)
+			public void componentShown(ComponentEvent arg0)
 			{
-				reagiereAufTextEingabe();
+				// TODO Auto-generated method stub
+				
 			}
 			
 			@Override
-			public void changedUpdate(DocumentEvent e)
+			public void componentResized(ComponentEvent arg0)
 			{
-				reagiereAufTextEingabe();
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentMoved(ComponentEvent arg0)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void componentHidden(ComponentEvent arg0)
+			{
+				reagiereAufAbbrechenButtonKlick();
+				
 			}
 		});
 	}

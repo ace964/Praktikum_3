@@ -10,6 +10,7 @@ import de.hawhh.informatik.sml.kino.werkzeuge.SubwerkzeugObserver;
 import de.hawhh.informatik.sml.kino.werkzeuge.datumsauswaehler.DatumAuswaehlWerkzeug;
 import de.hawhh.informatik.sml.kino.werkzeuge.platzverkauf.PlatzVerkaufsWerkzeug;
 import de.hawhh.informatik.sml.kino.werkzeuge.vorstellungsauswaehler.VorstellungsAuswaehlWerkzeug;
+import de.hawhh.informatik.sml.kino.werkzeuge.zahlung.ZahlungsWerkzeug;
 
 /**
  * Das Kassenwerkzeug. Mit diesem Werkzeug kann die Benutzerin oder der Benutzer
@@ -31,7 +32,8 @@ public class KassenWerkzeug
     private PlatzVerkaufsWerkzeug _platzVerkaufsWerkzeug;
     private DatumAuswaehlWerkzeug _datumAuswaehlWerkzeug;
     private VorstellungsAuswaehlWerkzeug _vorstellungAuswaehlWerkzeug;
-
+    private ZahlungsWerkzeug _zahlungsWerkzeug;
+    
     /**
      * Initialisiert das Kassenwerkzeug.
      * 
@@ -49,14 +51,18 @@ public class KassenWerkzeug
         _platzVerkaufsWerkzeug = new PlatzVerkaufsWerkzeug();
         _datumAuswaehlWerkzeug = new DatumAuswaehlWerkzeug();
         _vorstellungAuswaehlWerkzeug = new VorstellungsAuswaehlWerkzeug();
+        
 
-        erzeugeListenerFuerSubwerkzeuge();
+        
 
         // UI erstellen (mit eingebetteten UIs der direkten Subwerkzeuge)
         _ui = new KassenWerkzeugUI(_platzVerkaufsWerkzeug.getUIPanel(),
                 _datumAuswaehlWerkzeug.getUIPanel(),
                 _vorstellungAuswaehlWerkzeug.getUIPanel());
 
+        _zahlungsWerkzeug = new ZahlungsWerkzeug(_ui._frame);
+        
+        erzeugeListenerFuerSubwerkzeuge();
         registriereUIAktionen();
         setzeTagesplanFuerAusgewaehltesDatum();
         setzeAusgewaehlteVorstellung();
@@ -87,6 +93,28 @@ public class KassenWerkzeug
                         setzeAusgewaehlteVorstellung();
                     }
                 });
+        _platzVerkaufsWerkzeug.registriereBeobachter(new SubwerkzeugObserver()
+		{
+			
+			@Override
+			public void reagiereAufAenderung()
+			{
+				_zahlungsWerkzeug.beginneZahlvorgang(_platzVerkaufsWerkzeug.getPreisFuerAusgewähltePlaetze());
+				
+			}
+		});
+        
+        _zahlungsWerkzeug.registriereBeobachter(new SubwerkzeugObserver()
+		{
+			
+			@Override
+			public void reagiereAufAenderung()
+			{
+				zahlungAbgeschlossen();
+				
+			}
+			
+		});
     }
 
     /**
@@ -146,4 +174,17 @@ public class KassenWerkzeug
     {
         return _vorstellungAuswaehlWerkzeug.getAusgewaehlteVorstellung();
     }
+    
+    private void zahlungAbgeschlossen()
+	{
+		if(_zahlungsWerkzeug.isBezahlt())
+		{
+			_platzVerkaufsWerkzeug.verkaufeAusgewaehltePlaetze();
+		}
+		else
+		{
+			_platzVerkaufsWerkzeug.aktualisierePlatzplan();
+		}
+		
+	}
 }
